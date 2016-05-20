@@ -149,6 +149,51 @@ static SQLRETURN tracesql(SQLHENV henv, SQLHDBC hdbc, SQLHSTMT hstmt,
 
 ////////////////////////////////////////////////////////////////
 
+/* emulate rb_thread_call_without_gvl with rb_thread_blocking_region */
+#define rb_thread_call_without_gvl(func, data1, ubf, data2) \
+  #rb_thread_blocking_region((rb_blocking_function_t *)func, data1, ubf, data2)
+
+typedef struct _SQLExecDirect_Args {
+  SQLHSTMT    StatementHandle;
+#ifdef _UNICODE
+  SQLWCHAR    *StatementText;
+#else
+  SQLCHAR    *StatementText;
+#endif
+  SQLINTEGER  TextLength;
+} SQLExecDirect_Args;
+
+typedef struct _SQLExecute_Args {
+  SQLHSTMT    StatementHandle;
+} SQLExecute_Args;
+
+VALUE
+SQLExecute_wrapper(void *data)
+{
+	SQLExecute_Args *args = (SQLExecute_Args *)data;
+  return SQLExecute(args->StatementHandle);
+}
+
+void
+SQLExecute_unblock(void *data)
+{
+	SQLExecute_Args *args = (SQLExecute_Args *)data;
+	SQLCancel(args->StatementHandle);
+}
+
+VALUE
+SQLExecDirect_wrapper(void *data)
+{
+	SQLExecDirect_Args *args = (SQLExecDirect_Args *)data;
+  return SQLExecDirect(args->StatementHandle, args->StatementText, args->TextLength);
+}
+
+void
+SQLExecDirect_unblock(void *data)
+{
+	SQLExecDirect_Args *args = (SQLExecDirect_Args *)data;
+	SQLCancel(args->StatementHandle);
+}
 
 ////////////////////////////////////////////////////////////////
 
