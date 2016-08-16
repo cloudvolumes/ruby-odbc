@@ -151,24 +151,9 @@ static SQLRETURN tracesql(SQLHENV henv, SQLHDBC hdbc, SQLHSTMT hstmt,
 
 #ifdef HAVE_RB_THREAD_BLOCKING_REGION
 #define rb_thread_call_without_gvl(func, data1, ubf, data2) \
-  printf("this is ruby < 2 as rb_thread_blocking_region is called");
   rb_thread_blocking_region((rb_blocking_function_t *)func, data1, ubf, data2)
-//  #else
-//#define rb_thread_call_without_gvl(func, data1, ubf, data2) \
-//	  rb_thread_call_without_gvl((rb_blocking_function_t *)func, data1, ubf, data2)
 #endif
 
-/* emulate rb_thread_call_without_gvl with rb_thread_blocking_region */
-//#define rb_thread_call_without_gvl(func, data1, ubf, data2) \
-//  rb_thread_blocking_region((rb_blocking_function_t *)func, data1, ubf, data2)
-
-//#define rb_thread_call_without_gvl(func, data1, ubf, data2) \
-//	  rb_thread_call_without_gvl((rb_blocking_function_t *)func, data1, ubf, data2)
-
-//#define rb_thread_call_without_gvl(func, data1, ubf, data2) \
-  //rb_thread_call_without_gvl((rb_blocking_function_t *)func, data1, ubf, data2)
-  ///////////////////////////////////
-  
 typedef struct _SQLExecDirect_Args {
   SQLHSTMT    StatementHandle;
 #ifdef _UNICODE
