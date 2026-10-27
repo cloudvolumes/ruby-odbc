@@ -10,7 +10,6 @@ spec = Gem::Specification.new do |s|
   s.files = Dir.glob("**/*")
   s.require_paths << 'lib'
   s.test_files = Dir.glob('tests/*.rb')
-  s.has_rdoc = false
   s.extra_rdoc_files = ["README.rdoc", "COPYING", "ChangeLog", "GPL", "doc/odbc.html"]
   s.extensions = ["ext/extconf.rb", "ext/utf8/extconf.rb"]
 end
